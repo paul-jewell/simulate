@@ -2,7 +2,7 @@
  * event.cpp
  ************************************************************/
 
-#include "events.h"
+#include "event.h"
 
 Event::Event()
 {
@@ -26,3 +26,14 @@ long Event::getTime()
 {
     return EventTime;
 }
+
+Process *Event::getProcess()
+{
+    return eventReceiver;
+}
+
+int Event::getEventType()
+{
+    return eventType;
+}
+

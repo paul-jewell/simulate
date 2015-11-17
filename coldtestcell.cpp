@@ -5,7 +5,7 @@
 
 #include "coldtestcell.h"
 #include "simulate.h"
-#include "events.h"
+#include "event.h"
 
 ColdTestCell::ColdTestCell(EventList *list, Traverser *Traverser)
 {
@@ -40,14 +40,14 @@ bool ColdTestCell::run(void)
                     m_CTS = true;
                     currState = Loading;
                     loading = true;
-                    eventlist->push(Event(LoadingTime, this, Event::LoadingComplete));
+                    eventlist->push(new Event(LoadingTime, this, Event::LoadingComplete));
                }
                break;
           case Loading:
                if (PartLoaded) {
                     loadEnable = false;
                     currState = Running;
-                    eventlist->push(Event(CycleTime, this, Event::ProcessComplete));
+                    eventlist->push(new Event(CycleTime, this, Event::ProcessComplete));
                }
                break;
           case Running:
@@ -64,9 +64,9 @@ bool ColdTestCell::run(void)
      } while (currState != oldstate);
 }
 
-void ColdTestCell::ProcessEvent(Event event)
+void ColdTestCell::HandleEvent(Event *event)
 {
-     switch (event.eventType)
+     switch (event->eventType)
      {
      case Event::ProcessComplete:
           CellisRunning = false;
@@ -91,5 +91,16 @@ void ColdTestCell::Unload(void)
 {
      unloading = true;
      partReady = false;
+}
+
+bool ColdTestCell::CTS(void)
+{
+    return m_CTS;
+}
+
+
+bool ColdTestCell::RTS(void)
+{
+    return m_RTS;
 }
 

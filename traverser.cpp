@@ -15,7 +15,7 @@ Traverser::Traverser(EventList *eventlist)
 }
 
 
-void Traverser::ProcessEvent(Event *evnt)
+void Traverser::HandleEvent(Event *evnt)
 {
     switch (evnt->eventType) {
     case ev_LoadingComplete:
@@ -25,7 +25,6 @@ void Traverser::ProcessEvent(Event *evnt)
     case ev_atCell2:
     case ev_atCell3:
     case ev_atLoadingStation:
-        
         
     default:
         err(std::string("Unhandled event in Traverser::EventHandler()"));
@@ -50,9 +49,8 @@ bool Traverser::run(void)
             m_CTS = true;
             if (m_infeed->RTS()) {
                 State = st_Loading;
-                m_eventlist->push(new Event(LoadingTime,
-                                        this,
-                                        ev_LoadingComplete));
+                Event * event = new Event(LoadingTime, this, ev_LoadingComplete);
+                m_eventlist->push(event);
             }
             break;
         case st_Loading:

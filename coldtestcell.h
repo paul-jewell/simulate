@@ -6,7 +6,7 @@
 
 class ColdTestCell;
 
-#include "events.h"
+#include "event.h"
 #include "process.h"
 #include "traverser.h"
 
@@ -16,6 +16,8 @@ public:
     ColdTestCell(EventList *list, Traverser *Traverser);
     
     bool run(void);
+    void HandleEvent(Event *event);
+
     bool PartReady(void);
     void Unload(void);
     void Load();

@@ -16,7 +16,8 @@ class Traverser;
 #include "coldtestcell.h"
 #include "process.h"
 #include "source.h"
-#include "events.h"
+#include "sink.h"
+#include "event.h"
 
 class Traverser : public Process
 {
@@ -25,7 +26,7 @@ public:
     Traverser(EventList *eventlist);
     
     bool run(void);
-    void ProcessEvent(Event *evnt);
+    void HandleEvent(Event *evnt);
     bool RTS(ColdTestCell *cell);
     bool CTS(void);
         
@@ -34,7 +35,8 @@ public:
     void cell2(ColdTestCell *c2) { m_cell2 = c2; };
     void cell3(ColdTestCell *c3) { m_cell3 = c3; };
     void infeed(Source *in)     { m_infeed = in; };
-      
+    void outfeed(Sink *out)    { m_outfeed = out; };
+    
     enum STATE {
         st_WaitforPart,
         st_Loading,
@@ -66,6 +68,8 @@ private:
     ColdTestCell *m_cell2;
     ColdTestCell *m_cell3;
     Source *m_infeed;
+    Sink *m_outfeed;
+    
     EventList *m_eventlist;
 
     bool m_Loading;
@@ -78,13 +82,13 @@ private:
     bool m_cell2_RTS; // to load
     bool m_cell3_RTS;
 
-    static const float LoadingTime = 10.0; // seconds
-    static const float LoadtoCell1Time = 10.0;
-    static const float LoadtoCell2Time = 10.0;
-    static const float LoadtoCell3Time = 10.0;
-    static const float Cell1toLoadingStnTime = 20.0;
-    static const float Cell2toLoadingStnTime = 15.0;
-    static const float Cell3toLoadingStnTime = 10.0;
+    const float LoadingTime = 10.0; // seconds
+    const float LoadtoCell1Time = 10.0;
+    const float LoadtoCell2Time = 10.0;
+    const float LoadtoCell3Time = 10.0;
+    const float Cell1toLoadingStnTime = 20.0;
+    const float Cell2toLoadingStnTime = 15.0;
+    const float Cell3toLoadingStnTime = 10.0;
     
     
 };

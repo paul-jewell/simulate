@@ -1,5 +1,5 @@
 /***************************************************************************
- * events.h..........: event object - contains the information relating
+ * event.h...........: event object - contains the information relating
  *                     a simulation event
  *                     eventList object - time ordered list of events
  ***************************************************************************/
@@ -11,6 +11,7 @@
 #include <vector>
 #include <queue>
 
+class Event;
 #include "process.h"
 
 class Event {
@@ -31,21 +32,23 @@ public:
     Event(long time, Process *proc, int e);
 
     long getTime();
+    Process *getProcess();
+    int getEventType();
     Process *eventReceiver;
     int eventType;
 };
 
 class CompareEvent { // used for sorting the events in the EventList
 public:
-    bool operator()(Event &e1, Event &e2)
+    bool operator()(Event *e1, Event *e2)
     {
-        if (e1.getTime() > e2.getTime())
+        if (e1->getTime() > e2->getTime())
             return true;
         else
             return false;
     }
 };
 
-typedef std::priority_queue<Event, std::vector<Event>, CompareEvent> EventList;
+typedef std::priority_queue<Event*, std::vector<Event*>, CompareEvent> EventList;
 
 #endif
