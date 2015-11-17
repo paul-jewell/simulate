@@ -29,7 +29,6 @@ void Traverser::HandleEvent(Event *evnt)
     default:
         err(std::string("Unhandled event in Traverser::EventHandler()"));
     }
-    delete evnt; // dispose of processed message
 }
 
 
@@ -40,10 +39,11 @@ bool Traverser::run(void)
     // Note: StateChange may be true when the function is called
     // If so, it should be left as true
 
-    STATE oldstate;
-    
+    STATE oldState, originalState;
+
+    originalState = State;
     do {
-        oldstate = State;
+        oldState = State;
         switch (State) {
         case st_WaitforPart: // Waiting for part to be loaded from conveyor
             m_CTS = true;
@@ -133,7 +133,8 @@ bool Traverser::run(void)
         default:
             err(std::string("Reached default case in traverser::run()"));
         }
-    } while (State != oldstate);
+    } while (State != oldState);
+    return !(originalState == State);
 }
 
 

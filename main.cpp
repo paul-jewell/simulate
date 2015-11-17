@@ -1,8 +1,16 @@
+/*******************************************************************************
+ * main.cpp
+ * --------
+ * Cold test simulation to confirm the ratio impact through discrete event
+ * simulation
+ *
+ * by............: Paul Jewell
+ * Date Started..: 30th October 2015
+ *******************************************************************************/
+
 
 #include <iostream>
-#include <cstdlib>
 #include <string>
-#include <cstddef>
 
 #include "event.h"
 #include "traverser.h"
@@ -25,7 +33,7 @@ int main(int argc, char **argv)
     ColdTestCell cell1(&eventlist,&traverser);
     ColdTestCell cell2(&eventlist, &traverser);
     ColdTestCell cell3(&eventlist, &traverser);
-    Source supply(&eventlist);
+    Source supply(&eventlist, &traverser);
     Sink derig(&eventlist);
 
     processes.push_back(&traverser);
@@ -55,9 +63,12 @@ int main(int argc, char **argv)
                  i != processes.end(); i++)
             change |= (*i)->run(); // Run each process until no change
     } while (change);
-    
+
+
+    // Run the event management loop.
     while (Event *event = eventlist.top()) {
         eventlist.pop(); // Remove the top element from the list
+        SimulationTime += event->getTime(); // Advance simulation time
         if (event->getEventType() == ev_EndSimulation)
             break;
         event->getProcess()->HandleEvent(event);
@@ -69,6 +80,7 @@ int main(int argc, char **argv)
 void err(std::string str)
 {
     std::cerr << str << std::endl;
+    exit(1);
 }
 
 void err(char *msg)
@@ -76,52 +88,3 @@ void err(char *msg)
     std::cerr << msg << std::endl;
     exit(1);
 }
-
-/*
-int testmain(int argc, char **argv)
-{
-    Event myEvent;
-    myEvent = Event(300);
-
-    std::cout << "myEvent time: " << myEvent.getTime() << std::endl;
-    EventList.push(myEvent);
-    
-    EventList.push(Event(200));
-    EventList.push(Event(150));
-
-    std::cout << "three events pushed - now outputing: " << std::endl;
-        
-    while (! EventList.empty()) {
-        myEvent = EventList.top();
-        std::cout << myEvent.getTime() << std::endl;
-        EventList.pop();
-    }
-}
-
-
-void simulate()
-{
-    Event currEvent;
-    while (! EventList.empty()) {
-        currEvent = EventList.top();
-        simulationTime = currEvent.time;
-        currEvent.callback(); // Call event creation routine
-
-        // Iterate through the processes and check states
-
-        bool StateChange = false;
-        do {
-            StateChange = Traverser.run() ||
-                ColdTest1.run() ||
-                ColdTest2.run() ||
-                ColdTest3.run();
-        } while (statechange == true);
-
-        // Process statistics
-    }
-}
-
-    
-  
-  
-*/
